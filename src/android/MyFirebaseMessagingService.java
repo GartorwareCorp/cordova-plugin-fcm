@@ -21,6 +21,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "FCMPlugin";
 
+    private static final String NOTIFICATION_ID_KEY = "notification_id";
+    private static final String REQUEST_CODE_KEY = "request_code";
+
     /**
      * Called when message is received.
      *
@@ -50,7 +53,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 		
 		Log.d(TAG, "\tNotification Data: " + data.toString());
         FCMPlugin.sendPushPayload( data );
-        //sendNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody(), remoteMessage.getData());
+        sendNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody(), remoteMessage.getData());
     }
     // [END receive_message]
 
@@ -65,7 +68,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 		for (String key : data.keySet()) {
 			intent.putExtra(key, data.get(key).toString());
 		}
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+
+        int requestCode = 0;
+        if(data.containsKey(REQUEST_CODE_KEY)) {
+            requestCode = Integer.parseInt((String) data.get(REQUEST_CODE_KEY));
+        }
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, requestCode, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -80,6 +89,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        int notificationId = 0;
+        if(data.containsKey(NOTIFICATION_ID_KEY)) {
+            notificationId = Integer.parseInt((String) data.get(NOTIFICATION_ID_KEY));
+        }
+
+        notificationManager.notify(notificationId, notificationBuilder.build());
     }
 }
