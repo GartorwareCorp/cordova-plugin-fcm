@@ -62,7 +62,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      *
      * @param messageBody FCM message body received.
      */
-    private void sendNotification(String title, String messageBody, Map<String, Object> data) {
+    private void sendNotification(String title, String messageBody, Map<String, String> data) {
         Intent intent = new Intent(this, FCMPluginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		for (String key : data.keySet()) {
@@ -71,7 +71,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         int requestCode = 0;
         if(data.containsKey(REQUEST_CODE_KEY)) {
-            requestCode = Integer.parseInt((String) data.get(REQUEST_CODE_KEY));
+            requestCode = Integer.parseInt(data.get(REQUEST_CODE_KEY));
         }
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, requestCode, intent,
@@ -91,7 +91,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         int notificationId = 0;
         if(data.containsKey(NOTIFICATION_ID_KEY)) {
-            notificationId = Integer.parseInt((String) data.get(NOTIFICATION_ID_KEY));
+            notificationId = Integer.parseInt(data.get(NOTIFICATION_ID_KEY));
         }
 
         notificationManager.notify(notificationId, notificationBuilder.build());
