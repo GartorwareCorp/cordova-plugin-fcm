@@ -119,6 +119,28 @@ Free testing server: https://cordova-plugin-fcm.appspot.com
     "restricted_package_name":"" //Optional. Set for application filtering
 }
 ```
+
+This plugin allows you to control the behaviour of the notification using *4 data parameters*:
+```javascript
+{
+  "notification":{
+    ...
+  },
+  "data":{
+    "custom_notification":"true", 
+    "notification_id":"0",
+    "request_code":"0",
+    "big_text":"A really long text"
+  },
+  ...
+}
+```
+- **custom_notification**: (boolean) Enables the control of custom notifications
+- **notification_id**: (int) The id of the notification. If the same id is used for multiple notifications, the currently shown notification will be updated instead of showing a new one. Useful for "grouping" notifications per categories (4 new chat messages, 2 new photos)
+- **request_code**: (int) The code of the request 
+- **big_text**: (String) If this parameter is present a big view style notification will be shown with this text, instead of the standard one.
+
+
 ##How it works
 Send a push notification to a single device or topic.
 - 1.a Application is in foreground:

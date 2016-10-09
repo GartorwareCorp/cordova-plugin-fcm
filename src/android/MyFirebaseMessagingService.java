@@ -21,8 +21,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "FCMPlugin";
 
+    private static final String CUSTOM_NOTIFICATION_KEY = "custom_notification";
     private static final String NOTIFICATION_ID_KEY = "notification_id";
     private static final String REQUEST_CODE_KEY = "request_code";
+    private static final String BIG_TEXT_KEY = "big_text";
 
     /**
      * Called when message is received.
@@ -63,6 +65,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * @param messageBody FCM message body received.
      */
     private void sendNotification(String title, String messageBody, Map<String, String> data) {
+        if(!data.containsKey(CUSTOM_NOTIFICATION_KEY)) {
+            return;
+        }
+
         Intent intent = new Intent(this, FCMPluginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		for (String key : data.keySet()) {
@@ -88,6 +94,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if(data.containsKey(BIG_TEXT_KEY)) {        
+            notificationBuilder = notificationBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(data.get(BIG_TEXT_KEY)));
+        }
 
         int notificationId = 0;
         if(data.containsKey(NOTIFICATION_ID_KEY)) {
